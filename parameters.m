@@ -1,12 +1,12 @@
 % Creates parameter files from choice of parameter set specified in Opt
 % and saves it in .../DATA/Params.mat
 
-function create_params_EI(paramsfile)
+function parameters(paramsfile)
 %----------
 % NETWORKS
 %----------
 % Start and end of trial (in units of seconds)
-Sim.t_Start=-1;
+Sim.t_Start=0;
 Sim.t_End=1;
 Sim.dt_step=0.0001; % integration step (s)
 
@@ -27,8 +27,8 @@ N_e = N*4/5; % exc neurons
 N_i = N/5; % inh neurons
 Scale=(1000/N)^(1/2);
 % % global spontaneous firing rates (need to fix thresholds)
-% ni_e = 2; % 3.6;   %6.6   % AB97: 3.0
-% ni_i = 5; % 5.2;   %8.2   % AB97: 4.2
+ni_e = 2; % 3.6;   %6.6   % AB97: 3.0
+ni_i = 5; % 5.2;   %8.2   % AB97: 4.2
 %------------------
 % TIME CONSTANTS
 %------------------
@@ -55,7 +55,8 @@ Network.delta = delta; % SD of synaptic weights: Jee*(1+delta*randn(N_e)) Larger
 Network.deltaEI = delta; % SD of synaptic weights: Jee*(1+delta*randn(N_e)) Larger delta -> clusters look more async in the high state
 Network.deltaIE = delta; % SD of synaptic weights: Jee*(1+delta*randn(N_e)) Larger delta -> clusters look more async in the high state
 Network.deltaII = delta; % SD of synaptic weights: Jee*(1+delta*randn(N_e)) Larger delta -> clusters look more async in the high state
-Jplus = 13; % EE intra-cluster potentiation factor
+Jplus = 13; % EE intra-cluster potentiation factor - works with N=2000
+% Jplus = 15; % EE intra-cluster potentiation factor
 Network.factorEI = 10; % EI intra-cluster potentiation factor
 Network.factorIE = 8; % IE intra-cluster potentiation factor
 Network.factorII = 5; % II intra-cluster potentiation factor
@@ -119,7 +120,7 @@ extra='';
 
 save(paramsfile,'ni_ext','tau_arp','tau_i','tau_e','theta_e',...
     'theta_i','delta','f','Jee','Jii','Jie','Jei','Jee_ext','Jie_ext',...
-    'Jplus','He','Hi','N_e',...
+    'Jplus','He','Hi','N_e','ni_e','ni_i',...
     'N_i','Cee','Cie','Cei','Cii','Cext','p','Sim','Network',...
     'tausyn_e','tausyn_i','extra','Mu','paramsfile');
 

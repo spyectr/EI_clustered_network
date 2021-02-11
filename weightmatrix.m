@@ -259,7 +259,6 @@ plot(real(lambda),imag(lambda),'.');
 figset(gca,'Re(\lambda)','Im(\lambda)','eig(weights)',10);
 saveas(gcf,fullfile('data','weights.pdf'),'pdf');
 
-
 % spike thresholds for each population
 theta=[params.theta_e, params.theta_i];
 Theta=zeros(1,numel(params.popsize)+2);

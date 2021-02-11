@@ -12,7 +12,7 @@
 % inhibitory (I) spiking neurons, with E and I clusters  [from Wyrick et al. 2020]
 
 % CUSTOM OPTIONS:
-% 1) edit your custom-made stimuli inside aux.create_params. 
+% 1) edit your custom-made stimuli inside auxi.create_params. 
 %------------------------
 ClustersOption='EI';%
 %------------------------
@@ -23,7 +23,7 @@ parameters(paramsfile);
 savedir=fullfile('data'); mkdir(savedir); % setup directory for saving HMM data
 
 %% RUN SIMULATION
-ntrials=2; % number of trials
+ntrials=1; % number of trials
 file_sim=fullfile(savedir,'results.mat');  % file where simulation results are saved
 %---------------------------
 % GENERATE SYNAPTIC WEIGHTS
@@ -31,7 +31,19 @@ file_sim=fullfile(savedir,'results.mat');  % file where simulation results are s
 % J = N x N matrix of synaptic weights
 % params = structure containing all network parameters
 [J, params]=weightmatrix(paramsfile);
-% [stimulus_save, params]=aux.fun_stim(params); % STIMULUS
+% [stimulus_save, params]=auxi.fun_stim(params); % STIMULUS
+
+%% find threshold
+ni=[params.ni_e params.ni_i]; % baseline firing rates in E and I populations from parameters.m
+theta=auxi.fun_Fix_Threshold(ni,0,params);
+params.theta_e=theta(1); 
+params.theta_i=theta(2);
+params.Theta=theta;
+fprintf('  --- Fix_Threshold found:\n');
+fprintf('      theta_e=%g; theta_i=%g \n',theta(1),theta(2));
+fprintf('      Background rates: ni_e=%g, ni_i=%g\n',ni(1),ni(2));
+
+%%
 %------------------------
 % SIMULATION
 %------------------------
@@ -40,8 +52,6 @@ firings=cell(1,ntrials); % IMPORTANT: cell array with all spike times in each tr
 PlotData=cell(1,ntrials); % cell array with data for plotting
 for iTrial=1:ntrials
     ParamsRun=params;
-%     ParamsRun.Ext=stimulus_save.Ext;
-%     ParamsRun.Stimulus=stimulus_save.Stimulus;
     ParamsRun.J=J;
     fprintf('--- Start SIM ...\n');
     [firings{iTrial}, PlotData{iTrial}]=simulation(ParamsRun);
@@ -54,7 +64,7 @@ toc
 %------------------------
 % PLOT EVENTS
 %------------------------
-iTrial=2; % pick which trial to plot
+iTrial=1; % pick which trial to plot
 dataload=load(file_sim); % load simulation results
 data=dataload.PlotData{iTrial}; % membrane potentials
 firings=dataload.firings{iTrial}; % spikes
