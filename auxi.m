@@ -11,7 +11,7 @@ classdef auxi
         % Luca Mazzucato February 2014
         
         
-        function theta_out=fun_Fix_Threshold(ni,control,params)
+        function theta_out=fun_Fix_Threshold(ni,params)
             
             TOL_THRES=1e-9;
             TOL_POINT=1e-9;
@@ -34,10 +34,6 @@ classdef auxi
             %
             ni_e_wanted = ni(1);
             ni_i_wanted = ni(2);
-            if (control == 1)
-                ni_ext_e = ni_e_wanted;
-                ni_ext_i = ni_i_wanted;
-            end
             
             params=auxi.fun_In_Param_2pop_v2([theta_e, theta_i],params);
             Mu=auxi.MU(ni,params); % RUN FUNCTION
@@ -150,6 +146,12 @@ classdef auxi
                 ni_ext_i=ni_ext;
             end
             
+            pee=Cee/N_e;
+            pie=Cie/N_e;
+            pei=Cei/N_i;
+            pii=Cii/N_i;
+            
+            
             % TO AVOID PROBLEMS:
             x = 1.;
             
@@ -157,11 +159,20 @@ classdef auxi
             A(1,2) = -tau_e*Cei*Jei;
             A(2,1) = tau_i*Cie*x*Jie;
             A(2,2) = -tau_i*Cii*Jii;
+%             
+%             % variance for fixed in degree C (like in Amit-Brunel 1997)
+%             B(1,1) = tau_e*Cee*x*Jee*Jee;
+%             B(1,2) = tau_e*Cei*Jei*Jei;
+%             B(2,1) = tau_i*Cie*x*Jie*Jie;
+%             B(2,2) = tau_i*Cii*Jii*Jii;
             
-            B(1,1) = tau_e*Cee*x*Jee*Jee;
-            B(1,2) = tau_e*Cei*Jei*Jei;
-            B(2,1) = tau_i*Cie*x*Jie*Jie;
-            B(2,2) = tau_i*Cii*Jii*Jii;
+            % variance for Erdos-Renyi (like in Renart et al Science 2010)
+            B(1,1) = tau_e*N_e*pee*(1-pee)*x*Jee*Jee;
+            B(1,2) = tau_e*N_e*pei*(1-pei)*Jei*Jei;
+            B(2,1) = tau_i*N_i*pie*(1-pie)*x*Jie*Jie;
+            B(2,2) = tau_i*N_i*pii*(1-pii)*Jii*Jii;
+            
+            
             
             if (delta ~= 0)
                 for i=1:2
