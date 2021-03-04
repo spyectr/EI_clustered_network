@@ -168,8 +168,8 @@ classdef auxi
             
             % variance for Erdos-Renyi (like in Renart et al Science 2010)
             B(1,1) = tau_e*N_e*pee*(1-pee)*x*Jee*Jee;
-            B(1,2) = tau_e*N_e*pei*(1-pei)*Jei*Jei;
-            B(2,1) = tau_i*N_i*pie*(1-pie)*x*Jie*Jie;
+            B(1,2) = tau_e*N_i*pei*(1-pei)*Jei*Jei;
+            B(2,1) = tau_i*N_e*pie*(1-pie)*x*Jie*Jie;
             B(2,2) = tau_i*N_i*pii*(1-pii)*Jii*Jii;
             
             
