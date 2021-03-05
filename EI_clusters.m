@@ -35,7 +35,7 @@ file_sim=fullfile(savedir,'results.mat');  % file where simulation results are s
 
 %% find threshold
 ni=[params.ni_e params.ni_i]; % baseline firing rates in E and I populations from parameters.m
-theta=auxi.fun_Fix_Threshold(ni,0,params);
+theta=auxi.fun_Fix_Threshold(ni,params);
 params.theta_e=theta(1); 
 params.theta_i=theta(2);
 params.Theta=theta;
